@@ -23,6 +23,8 @@ import { analyzeFileToDatabase, repack } from "./UESaveHandler";
 import initSqlJs from 'sql.js';
 
 // Diccionario de comandos
+//Fairly confident that this runs when the web page is first hit and pulls all the data in from the file.
+//From there, everything just updates the db and UI when needed.
 const workerCommands = {
   loadDB: async (data, postMessage) => {
     console.log(data)
