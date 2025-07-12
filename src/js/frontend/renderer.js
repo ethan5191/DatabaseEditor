@@ -82,12 +82,13 @@ const h2hDiv = document.getElementById("head2head_viewer");
 const teamsDiv = document.getElementById("edit_teams");
 const predictDiv = document.getElementById("predict_results")
 const mod25Div = document.getElementById("mod_25")
+const adminDiv = document.getElementById("admin_div");
 
 const patchNotesBody = document.getElementById("patchNotesBody")
 const selectImageButton = document.getElementById('selectImage');
 const patreonKeyButton = document.getElementById('patreonKeyButton');
 
-const scriptsArray = [predictDiv, h2hDiv, viewDiv, driverTransferDiv, editStatsDiv, customCalendarDiv, carPerformanceDiv, teamsDiv, mod25Div]
+const scriptsArray = [predictDiv, h2hDiv, viewDiv, driverTransferDiv, editStatsDiv, customCalendarDiv, carPerformanceDiv, teamsDiv, mod25Div, adminDiv]
 
 const dropDownMenu = document.getElementById("dropdownMenu");
 
