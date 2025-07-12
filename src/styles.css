@@ -7503,6 +7503,13 @@ input.disabled {
   width: 171px;
 }
 
+#adminpill:hover,
+#adminpill:hover .pill-line,
+#adminpill.active .pill-line,
+#adminpill.active {
+  width:95px;
+}
+
 #specialCarIcon {
   width: 20px;
   height: 20px;
