@@ -21,7 +21,8 @@ import { excelToDate } from "./scriptUtils/eidtStatsUtils";
 import { analyzeFileToDatabase, repack } from "./UESaveHandler";
 
 import initSqlJs from 'sql.js';
-import {loadAdmin} from "../frontend/admin";
+import {loadAdmin, updateAdminUI} from "../frontend/admin";
+import {editColor} from "./scriptUtils/adminUtils";
 
 // Diccionario de comandos
 //Fairly confident that this runs when the web page is first hit and pulls all the data in from the file.
@@ -405,7 +406,16 @@ const workerCommands = {
                                       unlocksDownload: true  };
 
     postMessage(carPerformanceResponse);
-}
+},
+  editColor: (data, postMessage) => {
+    editColor(data);
+    postMessage({ responseMessage: "Colors Updated",
+      isEditCommand: true,
+      unlocksDownload: true  });
+
+    const adminData = loadAdmin();
+    postMessage({ responseMessage: "Admin fetched", content: adminData });
+  }
 
 };
 

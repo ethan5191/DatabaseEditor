@@ -2549,12 +2549,18 @@ body.og-theme .main-columns-drag-section, body.og-theme .main-editStats-section,
   flex-direction: column;
 }
 
+#header-div {
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+}
+
 .adminTeam {
   display: flex;
   gap: 10px;
 }
 
-.adminTeam label {
+.adminTeam label, .emptyH3, .adminTeam button {
   min-width: 255px;
 }
 
