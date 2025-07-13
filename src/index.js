@@ -13,6 +13,7 @@ import 'chartjs-plugin-datalabels';
 import './js/frontend/calendar.js';
 import './js/frontend/renderer.js';
 import './js/frontend/transfers.js';
+import './js/frontend/admin.js';
 import './js/frontend/stats.js';
 import './js/frontend/performance.js';
 import './js/frontend/seasonViewer.js';

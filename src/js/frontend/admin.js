@@ -17,7 +17,7 @@ export function loadAdmin() {
     teams.forEach((team) => {
         const teamObj = {};
         team.forEach((element, index) => {
-            let param = (index === 0 ?  'TeamName' : (index === 1 ? 'ColourID' : (index === 2) ? 'TeamID' : 'Colour'));
+            let param = (index === 0 ? 'TeamName' : (index === 1 ? 'ColourID' : (index === 2) ? 'TeamID' : 'Colour'));
             teamObj[param] = element;
         })
         updateTeams.push(teamObj);
@@ -44,11 +44,27 @@ export function updateAdminUI(data) {
             let label = document.createElement('label');
             label.textContent = team.TeamName;
             let input = document.createElement('input');
-            input.value =team.Colour;
+            input.value = team.Colour;
             teamDiv.appendChild(label);
             teamDiv.appendChild(input);
             parentDiv.appendChild(teamDiv);
             parentDiv.appendChild(br);
+        })
+        let buttonDiv = document.createElement('div');
+        buttonDiv.className = 'pos-relative';
+        let confirmAdminBtn = document.createElement('button');
+        confirmAdminBtn.className = "btn btn-primary custom-confirm";
+        confirmAdminBtn.id = "confirmAdmin";
+        confirmAdminBtn.textContent = "Confirm";
+        buttonDiv.appendChild(confirmAdminBtn);
+        let dropdownLineDiv = document.createElement('div');
+        dropdownLineDiv.className = "dropdown-line";
+        buttonDiv.appendChild(dropdownLineDiv);
+        parentDiv.appendChild(buttonDiv);
+
+        //Since this button is dynamically added, its eventListener must be added here.
+        document.getElementById("confirmAdmin").addEventListener('click', function () {
+            console.log("button clicked");
         })
     }
 }
