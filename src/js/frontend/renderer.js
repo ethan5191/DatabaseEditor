@@ -29,6 +29,7 @@ import { PUBLIC_KEY } from './public_key.js';
 import members from "../../data/members.json"
 
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js";
+import {updateAdminUI} from "./admin";
 
 
 const names_configs = {
@@ -700,6 +701,9 @@ const messageHandlers = {
     },
     "Mod compatibility": (message) => {
         updateModBlocking(message)
+    },
+    "Admin fetched": (message) => {
+        updateAdminUI(message)
     }
 };
 

@@ -2543,6 +2543,21 @@ body.og-theme .main-columns-drag-section, body.og-theme .main-editStats-section,
   flex-direction: column;
 }
 
+#admin_div {
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.adminTeam {
+  display: flex;
+  gap: 10px;
+}
+
+.adminTeam label {
+  min-width: 255px;
+}
+
 #probText {
   padding-top: 2px;
   color: var(--text-general);

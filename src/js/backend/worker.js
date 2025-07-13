@@ -21,6 +21,7 @@ import { excelToDate } from "./scriptUtils/eidtStatsUtils";
 import { analyzeFileToDatabase, repack } from "./UESaveHandler";
 
 import initSqlJs from 'sql.js';
+import {loadAdmin} from "../frontend/admin";
 
 // Diccionario de comandos
 //Fairly confident that this runs when the web page is first hit and pulls all the data in from the file.
@@ -117,6 +118,10 @@ const workerCommands = {
 
     const modCompatibility = check2025ModCompatibility(yearData[0]);
     postMessage({ responseMessage: "Mod compatibility", content: modCompatibility });
+
+    const adminData = loadAdmin();
+    //response message value here is used in the renderer.js to call the method to actually update the UI, one to multiple methods.
+    postMessage({ responseMessage: "Admin fetched", content: adminData });
 
     const wasError = fixes_mod();
     if (wasError){
