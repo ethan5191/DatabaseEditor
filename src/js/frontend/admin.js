@@ -1,13 +1,16 @@
 import {queryDB} from "../backend/dbManager";
 
+const groups = ["color", "rankings"];
+
 //Should only be responsible for loading the data from the database I believe.
 export function loadAdmin() {
-    // const columns = queryDB('PRAGMA table_info(Teams);', 'allRows');
-    // const columnNames = ([]);
-    // columns.forEach((column, index) => {
-    //     columnNames[index] = column[1];
-    // })
-    // console.log(columnNames);
+    let updateTeams = ([]);
+    updateTeams.push(loadColors());
+    // updateTeams.push(loadRanking());
+    return updateTeams;
+}
+
+function loadColors() {
     const teams = queryDB(`
         select T.TeamName, TC.*
         from Teams T
@@ -20,14 +23,25 @@ export function loadAdmin() {
             teamObj[param] = element;
         })
         updateTeams.push(teamObj);
-        // const teamObj = {};
-        // team.forEach((element, index) => {
-        //     let param = columnNames[index];
-        //     teamObj[param] = element;
-        // })
-        // updateTeams.push(teamObj);
     })
     return updateTeams;
+}
+
+function loadRanking() {
+    const rankings = queryDB(`
+        select TeamName, PredictedRanking
+        from Teams
+        where Formula = 1;`, "allRows");
+    const updateRankings = ([]);
+    rankings.forEach((ranking) => {
+        const teamObj = {};
+        ranking.forEach((element, index) => {
+            let param = (index === 0) ? 'TeamName' : 'PredictedRanking';
+            teamObj[param] = element;
+        })
+        updateRankings.push(teamObj);
+    })
+    return updateRankings;
 }
 
 //Responsible for actually updating the UI.
@@ -42,30 +56,35 @@ export function updateAdminUI(data) {
         emptyH3.className = 'emptyH3';
         let colorH3 = document.createElement('h3');
         colorH3.textContent = 'Colors';
+        let rankingsH3 = document.createElement('h3');
+        rankingsH3.textContent = 'Rankings';
         headerDiv.appendChild(emptyH3);
         headerDiv.appendChild(colorH3);
+        // headerDiv.appendChild(rankingsH3);
         parentDiv.appendChild(headerDiv);
         const br = document.createElement('br');
         let count = 0;
-        data.forEach((team) => {
-            let teamDiv = document.createElement('div');
-            let idName = team.TeamName + "-div";
-            if (document.getElementById(idName)) {
-                idName = idName + count;
-                count++;
-            }
-            teamDiv.id = idName;
-            teamDiv.classList.add('adminTeam');
-            let label = document.createElement('label');
-            label.textContent = team.TeamName;
-            let input = document.createElement('input');
-            input.value = team.Colour;
-            input.id = team.ColourID;
-            label.htmlFor = input.id;
-            teamDiv.appendChild(label);
-            teamDiv.appendChild(input);
-            parentDiv.appendChild(teamDiv);
-            parentDiv.appendChild(br);
+        data.forEach((elementsList) => {
+            elementsList.forEach((element) => {
+                let teamDiv = document.createElement('div');
+                let idName = element.TeamName + "-div";
+                if (document.getElementById(idName)) {
+                    idName = idName + count;
+                    count++;
+                }
+                teamDiv.id = idName;
+                teamDiv.classList.add('adminTeam');
+                let label = document.createElement('label');
+                label.textContent = element.TeamName;
+                let input = document.createElement('input');
+                input.value = element.Colour;
+                input.id = "color" + "-" + element.ColourID;
+                label.htmlFor = input.id;
+                teamDiv.appendChild(label);
+                teamDiv.appendChild(input);
+                parentDiv.appendChild(teamDiv);
+                parentDiv.appendChild(br);
+            })
         })
         let buttonDiv = document.createElement('div');
         buttonDiv.className = 'pos-relative';
@@ -85,10 +104,12 @@ export function updateAdminUI(data) {
             const teamDivs = adminDiv.querySelectorAll(':scope > div');
             let dataArray = ([]);
             teamDivs.forEach((div) => {
-                const input = div.querySelector('input');
+                const input = div.querySelector('input[id*="color"]');
                 if (input) {
+                    const parts = input.id.split('-');
+                    const id = parts.pop();
                     const data = {
-                        ColourID: input.id,
+                        ColourID: id,
                         Colour: input.value
                     }
                     dataArray.push(data);
