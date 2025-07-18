@@ -1,12 +1,12 @@
 import {queryDB} from "../backend/dbManager";
 
 const groups = ["color", "rankings"];
+const headers = ['Teams', 'Colors', 'Rankings'];
 
 //Should only be responsible for loading the data from the database I believe.
 export function loadAdmin() {
     let updateTeams = ([]);
     updateTeams.push(loadData());
-    // updateTeams.push(loadRanking());
     return updateTeams;
 }
 
@@ -102,18 +102,12 @@ function createHeaderDiv() {
     let headerDiv = document.createElement('div');
     headerDiv.className = 'admin_div';
     headerDiv.id = 'header-div';
-    let teamH3 = document.createElement('h3');
-    teamH3.textContent = 'Teams';
-    teamH3.className = 'teamH3';
-    let colorH3 = document.createElement('h3');
-    colorH3.textContent = 'Colors';
-    colorH3.className = 'teamH3';
-    let rankingsH3 = document.createElement('h3');
-    rankingsH3.textContent = 'Rankings';
-    rankingsH3.className = 'teamH3';
-    headerDiv.appendChild(teamH3);
-    headerDiv.appendChild(colorH3);
-    headerDiv.appendChild(rankingsH3);
+    headers.forEach((header) => {
+        let h = document.createElement('h3');
+        h.className = 'teamH3';
+        h.textContent = header;
+        headerDiv.appendChild(h);
+    })
     return headerDiv;
 }
 
