@@ -35,6 +35,7 @@ export function updateAdminUI(data) {
         parentDiv.appendChild(createHeaderDiv());
         const br = document.createElement('br');
         let count = 0;
+        let rankingsMap = new Map();
         data.forEach((elementsList) => {
             elementsList.forEach((element) => {
                 let showRanking = true;
@@ -57,7 +58,7 @@ export function updateAdminUI(data) {
                 teamDiv.appendChild(input);
                 if (showRanking) {
                     let rankings = document.createElement('select');
-                    rankings.id = "rankings" + "-" + element.PredictedRanking;
+                    rankings.id = "rankings" + "-" + element.TeamName;
                     for (let i = 1; i <= 11; i++) {
                         const optionElement = document.createElement('option');
                         optionElement.value = i;
@@ -68,12 +69,36 @@ export function updateAdminUI(data) {
                         rankings.appendChild(optionElement);
                     }
                     teamDiv.appendChild(rankings);
+                    rankingsMap.set(rankings.id, element.PredictedRanking);
                 }
                 parentDiv.appendChild(teamDiv);
                 parentDiv.appendChild(br);
+
+                teamDiv.addEventListener('change', function(event) {
+                    const targetElement = event.target;
+                    console.log(targetElement);
+                    if (targetElement.tagName === 'SELECT') {
+                        //Ensure we are only updating the rankings dropdowns when we have a change in the rankings.
+                        //Protects future additions of other dropdowns under the teamDiv.
+                        if (targetElement.id.startsWith('rankings-')) {
+                            let mapRecord = rankingsMap.get(targetElement.id);
+                            console.log(mapRecord);
+                        }
+                    }
+                })
             })
         })
         parentDiv.appendChild(createButtonDiv());
+        if (rankingsMap && rankingsMap.size > 0) {
+            let rankingsArray = Array.from(rankingsMap.entries());
+            rankingsArray.sort((a, b) => {
+                if (a[1] !== b[1]) {
+                    return a[1] - b[1];
+                }
+            });
+            rankingsMap = new Map(rankingsArray);
+            console.log(rankingsMap);
+        }
 
         // Since this button is dynamically added, its eventListener must be added here.
         document.getElementById("confirmAdmin").addEventListener('click', function () {
