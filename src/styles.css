@@ -2560,7 +2560,7 @@ body.og-theme .main-columns-drag-section, body.og-theme .main-editStats-section,
   gap: 10px;
 }
 
-.adminTeam label, .emptyH3, .adminTeam button {
+.adminTeam label, .teamH3, .adminTeam button {
   min-width: 255px;
 }
 
