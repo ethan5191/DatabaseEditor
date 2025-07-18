@@ -5,45 +5,27 @@ const groups = ["color", "rankings"];
 //Should only be responsible for loading the data from the database I believe.
 export function loadAdmin() {
     let updateTeams = ([]);
-    updateTeams.push(loadColors());
+    updateTeams.push(loadData());
     // updateTeams.push(loadRanking());
     return updateTeams;
 }
 
-//Loads the team colors object along with the team name from the Teams table.
-function loadColors() {
+//Loads team data
+function loadData() {
     const teams = queryDB(`
-        select T.TeamName, TC.*
+        select T.TeamName, TC.*, T.PredictedRanking
         from Teams T
                  inner join Teams_Colours TC on T.TeamID = TC.TeamID;`, 'allRows');
     const updateTeams = ([]);
     teams.forEach((team) => {
         const teamObj = {};
         team.forEach((element, index) => {
-            let param = (index === 0 ? 'TeamName' : (index === 1 ? 'ColourID' : (index === 2) ? 'TeamID' : 'Colour'));
+            let param = (index === 0 ? 'TeamName' : (index === 1 ? 'ColourID' : (index === 2) ? 'TeamID' : (index === 3) ? 'Colour' : 'PredictedRanking'));
             teamObj[param] = element;
         })
         updateTeams.push(teamObj);
     })
     return updateTeams;
-}
-
-//Loads the team name and predicted ranking from the Teams table.
-function loadRanking() {
-    const rankings = queryDB(`
-        select TeamName, PredictedRanking
-        from Teams
-        where Formula = 1;`, "allRows");
-    const updateRankings = ([]);
-    rankings.forEach((ranking) => {
-        const teamObj = {};
-        ranking.forEach((element, index) => {
-            let param = (index === 0) ? 'TeamName' : 'PredictedRanking';
-            teamObj[param] = element;
-        })
-        updateRankings.push(teamObj);
-    })
-    return updateRankings;
 }
 
 //Responsible for actually updating the UI.
@@ -55,11 +37,13 @@ export function updateAdminUI(data) {
         let count = 0;
         data.forEach((elementsList) => {
             elementsList.forEach((element) => {
+                let showRanking = true;
                 let teamDiv = document.createElement('div');
                 let idName = element.TeamName + "-div";
                 if (document.getElementById(idName)) {
                     idName = idName + count;
                     count++;
+                    showRanking = false;
                 }
                 teamDiv.id = idName;
                 teamDiv.classList.add('adminTeam');
@@ -71,6 +55,20 @@ export function updateAdminUI(data) {
                 label.htmlFor = input.id;
                 teamDiv.appendChild(label);
                 teamDiv.appendChild(input);
+                if (showRanking) {
+                    let rankings = document.createElement('select');
+                    rankings.id = "rankings" + "-" + element.PredictedRanking;
+                    for (let i = 1; i <= 11; i++) {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = i;
+                        optionElement.textContent = i;
+                        if (i === element.PredictedRanking) {
+                            optionElement.selected = true;
+                        }
+                        rankings.appendChild(optionElement);
+                    }
+                    teamDiv.appendChild(rankings);
+                }
                 parentDiv.appendChild(teamDiv);
                 parentDiv.appendChild(br);
             })
@@ -109,11 +107,13 @@ function createHeaderDiv() {
     teamH3.className = 'teamH3';
     let colorH3 = document.createElement('h3');
     colorH3.textContent = 'Colors';
+    colorH3.className = 'teamH3';
     let rankingsH3 = document.createElement('h3');
     rankingsH3.textContent = 'Rankings';
+    rankingsH3.className = 'teamH3';
     headerDiv.appendChild(teamH3);
     headerDiv.appendChild(colorH3);
-    // headerDiv.appendChild(rankingsH3);
+    headerDiv.appendChild(rankingsH3);
     return headerDiv;
 }
 
