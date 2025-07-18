@@ -2564,6 +2564,10 @@ body.og-theme .main-columns-drag-section, body.og-theme .main-editStats-section,
   min-width: 255px;
 }
 
+.adminTeamName {
+  min-width: 255px;
+}
+
 #probText {
   padding-top: 2px;
   color: var(--text-general);
