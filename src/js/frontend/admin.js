@@ -74,30 +74,44 @@ export function updateAdminUI(data) {
                 parentDiv.appendChild(teamDiv);
                 parentDiv.appendChild(br);
 
+                //If a dropdown changes, it will trigger this method to fire.
                 teamDiv.addEventListener('change', function(event) {
                     const targetElement = event.target;
-                    console.log(targetElement);
                     if (targetElement.tagName === 'SELECT') {
                         //Ensure we are only updating the rankings dropdowns when we have a change in the rankings.
                         //Protects future additions of other dropdowns under the teamDiv.
                         if (targetElement.id.startsWith('rankings-')) {
-                            let mapRecord = rankingsMap.get(targetElement.id);
-                            console.log(mapRecord);
+                            let oldValue = rankingsMap.get(targetElement.id);
+                            let newValue = targetElement.value;
+                            //Get the element and update its value to update the UI.
+                            let element = document.getElementById(targetElement.id);
+                            element.value = targetElement.value;
+                            rankingsMap.set(targetElement.id, element.value);
+                            const shiftDirection = (newValue < oldValue) ? 1 : -1;
+                            const startRange = (newValue < oldValue) ? newValue : oldValue + 1;
+                            const endRange =  (newValue < oldValue) ? oldValue - 1 : newValue;
+                            rankingsMap.forEach((ranking, id) => {
+                                if (id === targetElement.id) {
+                                    return;
+                                }
+                                if (ranking >= startRange && ranking <= endRange) {
+                                    const newRank = ranking + shiftDirection;
+                                    const currElement = document.getElementById(id);
+                                    currElement.value = newRank;
+                                    rankingsMap.set(id, newRank);
+                                }
+                            })
+                            //Sort the map to ensure its in the correct order in memory for use if the order is updated again.
+                            rankingsMap = sortMap(rankingsMap);
                         }
                     }
                 })
             })
         })
         parentDiv.appendChild(createButtonDiv());
+        //If ranking map exists, then we want to sort it ascending to simplify the change logic.
         if (rankingsMap && rankingsMap.size > 0) {
-            let rankingsArray = Array.from(rankingsMap.entries());
-            rankingsArray.sort((a, b) => {
-                if (a[1] !== b[1]) {
-                    return a[1] - b[1];
-                }
-            });
-            rankingsMap = new Map(rankingsArray);
-            console.log(rankingsMap);
+           rankingsMap = sortMap(rankingsMap);
         }
 
         // Since this button is dynamically added, its eventListener must be added here.
@@ -162,4 +176,15 @@ function callCommand(dataArray, parentDiv) {
         //Replace the content of the screen, so it doesn't duplicate itself.
         parentDiv.replaceChildren();
     })
+}
+
+function sortMap(rankingsMap) {
+    let rankingsArray = Array.from(rankingsMap.entries());
+    //sorts by the predictedRanking (1-11).
+    rankingsArray.sort((a, b) => {
+        if (a[1] !== b[1]) {
+            return a[1] - b[1];
+        }
+    });
+    return new Map(rankingsArray);
 }
