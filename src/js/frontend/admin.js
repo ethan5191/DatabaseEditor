@@ -58,7 +58,7 @@ export function updateAdminUI(data) {
                 teamDiv.appendChild(input);
                 if (showRanking) {
                     let rankings = document.createElement('select');
-                    rankings.id = "rankings" + "-" + element.TeamName;
+                    rankings.id = "rankings" + "-" + element.TeamID;
                     for (let i = 1; i <= 11; i++) {
                         const optionElement = document.createElement('option');
                         optionElement.value = i;
@@ -120,16 +120,23 @@ export function updateAdminUI(data) {
             const teamDivs = adminDiv.querySelectorAll(':scope > div');
             let dataArray = ([]);
             teamDivs.forEach((div) => {
+                let data = {};
                 const input = div.querySelector('input[id*="color"]');
                 if (input) {
                     const parts = input.id.split('-');
                     const id = parts.pop();
-                    const data = {
+                    data = {
                         ColourID: id,
                         Colour: input.value
                     }
-                    dataArray.push(data);
                 }
+                const select = div.querySelector('select[id*="rankings"]');
+                if (select) {
+                    const parts = select.id.split('-');
+                    data.TeamID = parts.pop();
+                    data.PredictedRanking = select.value
+                }
+                if (data.ColourID) dataArray.push(data);
             })
             callCommand(dataArray, parentDiv);
         })

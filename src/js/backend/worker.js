@@ -22,7 +22,7 @@ import { analyzeFileToDatabase, repack } from "./UESaveHandler";
 
 import initSqlJs from 'sql.js';
 import {loadAdmin, updateAdminUI} from "../frontend/admin";
-import {editColor, editTeamName} from "./scriptUtils/adminUtils";
+import {editColor, editRankings, editTeamName} from "./scriptUtils/adminUtils";
 
 // Diccionario de comandos
 //Fairly confident that this runs when the web page is first hit and pulls all the data in from the file.
@@ -412,6 +412,11 @@ const workerCommands = {
     postMessage({ responseMessage: "Colors Updated",
       isEditCommand: true,
       unlocksDownload: true  });
+
+    editRankings(data);
+    postMessage({ responseMessage: "Rankings Updated",
+    isEditCommand: true,
+    unlocksDownload: true  });
 
     //Edit Team Name logic causes an error, it tries to use the team name as an actual column somewhere. No idea why.
     // editTeamName(data);
