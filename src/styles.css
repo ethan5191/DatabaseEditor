@@ -2564,6 +2564,14 @@ body.og-theme .main-columns-drag-section, body.og-theme .main-editStats-section,
   min-width: 255px;
 }
 
+.adminMinWidth {
+  min-width: 150px;
+}
+
+.colors {
+  max-width: 150px;
+}
+
 .adminTeamName {
   min-width: 255px;
 }

@@ -1,7 +1,7 @@
 import {queryDB} from "../backend/dbManager";
 
 const groups = ["color", "rankings"];
-const headers = ['Teams', 'Colors', 'Rankings'];
+const headers = [['Teams', 'teamH3'], ['Colors', 'adminMinWidth'], ['Rankings', 'adminMinWidth']];
 //multi dimensional array with the query param, and the 2 param names for updating the data object..
 const inputParams = [['input[id*="color"]', 'ColourID', 'Colour'], ['select[id*="rankings"]', 'TeamID', 'PredictedRanking']];
 
@@ -52,13 +52,17 @@ export function updateAdminUI(data) {
                 teamDiv.classList.add('adminTeam');
                 let label = document.createElement('label');
                 label.textContent = element.TeamName;
-                let input = document.createElement('input');
-                input.value = element.Colour;
-                input.id = "color" + "-" + element.ColourID;
-                label.htmlFor = input.id;
+                let colorInput = document.createElement('input');
+                colorInput.value = element.Colour;
+                colorInput.id = "color" + "-" + element.ColourID;
+                colorInput.classList.add('colors');
+                label.htmlFor = colorInput.id;
                 teamDiv.appendChild(label);
-                teamDiv.appendChild(input);
+                teamDiv.appendChild(colorInput);
                 if (showRanking) {
+                    let rankingsDiv = document.createElement('div');
+                    rankingsDiv.classList.add('adminMinWidth');
+                    rankingsDiv.id = element.TeamName + "-" + "RankingsDiv";
                     let rankings = document.createElement('select');
                     rankings.id = "rankings" + "-" + element.TeamID;
                     for (let i = 1; i <= 11; i++) {
@@ -70,7 +74,8 @@ export function updateAdminUI(data) {
                         }
                         rankings.appendChild(optionElement);
                     }
-                    teamDiv.appendChild(rankings);
+                    rankingsDiv.appendChild(rankings);
+                    teamDiv.appendChild(rankingsDiv);
                     rankingsMap.set(rankings.id, element.PredictedRanking);
                 }
                 parentDiv.appendChild(teamDiv);
@@ -140,8 +145,8 @@ function createHeaderDiv() {
     headerDiv.id = 'header-div';
     headers.forEach((header) => {
         let h = document.createElement('h3');
-        h.className = 'teamH3';
-        h.textContent = header;
+        h.className = header[1];
+        h.textContent = header[0];
         headerDiv.appendChild(h);
     })
     return headerDiv;
