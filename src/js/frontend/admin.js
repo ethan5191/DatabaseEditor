@@ -2,6 +2,8 @@ import {queryDB} from "../backend/dbManager";
 
 const groups = ["color", "rankings"];
 const headers = ['Teams', 'Colors', 'Rankings'];
+//multi dimensional array with the query param, and the 2 param names for updating the data object..
+const inputParams = [['input[id*="color"]', 'ColourID', 'Colour'], ['select[id*="rankings"]', 'TeamID', 'PredictedRanking']];
 
 //Should only be responsible for loading the data from the database I believe.
 export function loadAdmin() {
@@ -121,21 +123,9 @@ export function updateAdminUI(data) {
             let dataArray = ([]);
             teamDivs.forEach((div) => {
                 let data = {};
-                const input = div.querySelector('input[id*="color"]');
-                if (input) {
-                    const parts = input.id.split('-');
-                    const id = parts.pop();
-                    data = {
-                        ColourID: id,
-                        Colour: input.value
-                    }
-                }
-                const select = div.querySelector('select[id*="rankings"]');
-                if (select) {
-                    const parts = select.id.split('-');
-                    data.TeamID = parts.pop();
-                    data.PredictedRanking = select.value
-                }
+                inputParams.forEach((param) => {
+                    data = updateData(data, div, param[0], param[1], param[2]);
+                })
                 if (data.ColourID) dataArray.push(data);
             })
             callCommand(dataArray, parentDiv);
@@ -194,4 +184,14 @@ function sortMap(rankingsMap) {
         }
     });
     return new Map(rankingsArray);
+}
+
+function updateData(data, div, elementName, param1, param2) {
+    const input = div.querySelector(elementName);
+    if (input) {
+        const parts = input.id.split('-');
+        data[param1] = parts.pop();
+        data[param2] = Number(input.value);
+    }
+    return data;
 }
